@@ -3,6 +3,8 @@ import { Container, Form, Button, Alert } from "react-bootstrap";
 import { parse } from "papaparse";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
+  faFileCsv,
+  faUpload,
   faPaperPlane,
   faDownload,
   faSync,
@@ -112,12 +114,19 @@ const Converter = () => {
   };
 
   return (
-    <Container>
-      <h1 className="mt-5">CSV to SRT Converter</h1>
+    <Container className="col-xl-6 col-lg-6 col-md-8 col-sm-12 col-12">
+      <h1 className="mt-5">
+        <FontAwesomeIcon icon={faFileCsv} className="me-2" />
+        CSV to SRT Converter
+      </h1>
       <Form>
         <Form.Group key={fileInputKey} controlId="formFile" className="my-3">
-          <Form.Label>Upload CSV File</Form.Label>
+          <Form.Label>
+            <FontAwesomeIcon icon={faUpload} className="me-2" />
+            Upload CSV File
+          </Form.Label>
           <Form.Control
+            size="md"
             type="file"
             accept=".csv"
             ref={fileInputRef}
@@ -127,6 +136,7 @@ const Converter = () => {
         </Form.Group>
         <Form.Group controlId="formBasicCheckbox" className="my-3">
           <Form.Check
+            size="md"
             type="checkbox"
             label="CSV has headers"
             checked={hasHeaders}
@@ -141,6 +151,7 @@ const Converter = () => {
                   header.charAt(0).toUpperCase() + header.slice(1)
                 } Header`}</Form.Label>
                 <Form.Control
+                  size="md"
                   type="text"
                   placeholder={`Enter the header name for ${header}`}
                   value={headers[header]}
@@ -162,17 +173,27 @@ const Converter = () => {
             SRT conversion successful.
           </Alert>
         )}
-        <Button variant="primary" onClick={handleConvert}>
+        <Button size="md" variant="primary" onClick={handleConvert}>
           <FontAwesomeIcon icon={faPaperPlane} className="me-2" />
           Convert to SRT
         </Button>
         {srtContent && (
-          <Button variant="success" className="ms-3" onClick={handleDownload}>
+          <Button
+            size="md"
+            variant="success"
+            className="ms-3"
+            onClick={handleDownload}
+          >
             <FontAwesomeIcon icon={faDownload} className="me-2" />
             Download SRT
           </Button>
         )}
-        <Button variant="secondary" className="ms-3" onClick={handleReset}>
+        <Button
+          size="md"
+          variant="secondary"
+          className="ms-3"
+          onClick={handleReset}
+        >
           <FontAwesomeIcon icon={faSync} className="me-2" />
           Reset
         </Button>

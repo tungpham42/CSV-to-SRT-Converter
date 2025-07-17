@@ -1,13 +1,76 @@
-body {
-  margin: 0;
-  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',
-    'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue',
-    sans-serif;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
-}
+@import url("https://fonts.googleapis.com/css2?family=Work+Sans:ital,wght@0,100..900;1,100..900&display=swap");
 
-code {
-  font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New',
-    monospace;
+body {
+  background: linear-gradient(135deg, #6b7280, #1e3a8a) !important;
+  min-height: 100vh !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  font-family: "Work Sans", sans-serif !important;
+}
+.converter-card {
+  background: white !important;
+  border-radius: 15px !important;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2) !important;
+  padding: 2rem !important;
+  max-width: 600px !important;
+  width: 100% !important;
+  transition: transform 0.3s ease !important;
+}
+.converter-card:hover {
+  transform: translateY(-5px) !important;
+}
+.btn-custom {
+  padding: 10px 20px !important;
+  border-radius: 25px !important;
+  font-weight: 600 !important;
+  transition: all 0.3s ease !important;
+}
+.btn-primary {
+  background: #4f46e5 !important;
+  border: none !important;
+}
+.btn-primary:hover {
+  background: #4338ca !important;
+}
+.btn-success {
+  background: #10b981 !important;
+  border: none !important;
+}
+.btn-success:hover {
+  background: #059669 !important;
+}
+.btn-secondary {
+  background: #6b7280 !important;
+  border: none !important;
+}
+.btn-secondary:hover {
+  background: #4b5563 !important;
+}
+.form-control {
+  border-radius: 10px !important;
+  border: 2px solid #e5e7eb !important;
+  transition: border-color 0.3s ease !important;
+}
+.form-control:focus {
+  border-color: #4f46e5 !important;
+  box-shadow: 0 0 5px rgba(79, 70, 229, 0.3) !important;
+}
+.alert {
+  border-radius: 10px !important;
+  border: none !important;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1) !important;
+}
+h1 {
+  color: #1e3a8a !important;
+  font-weight: 700 !important;
+  text-align: center !important;
+  margin-bottom: 1.5rem !important;
+}
+.form-check-input:checked {
+  background-color: #4f46e5 !important;
+  border-color: #4f46e5 !important;
+}
+.icon {
+  margin-right: 8px !important;
 }

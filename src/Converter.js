@@ -1,6 +1,5 @@
-import React, { useState, useRef } from "react";
+import { useState, useRef } from "react";
 import { Container, Form, Button, Alert } from "react-bootstrap";
-import { parse } from "papaparse";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
   faFileCsv,
@@ -11,6 +10,7 @@ import {
   faExclamationCircle,
   faInfoCircle,
 } from "@fortawesome/free-solid-svg-icons";
+import { parse } from "papaparse";
 
 const Converter = () => {
   const [csvFile, setCsvFile] = useState(null);
@@ -19,9 +19,9 @@ const Converter = () => {
   const [srtContent, setSrtContent] = useState("");
   const [hasHeaders, setHasHeaders] = useState(false);
   const [headers, setHeaders] = useState({
-    startTime: "",
-    endTime: "",
-    text: "",
+    startTime: "start_time",
+    endTime: "end_time",
+    text: "subtitle_text",
   });
 
   const fileInputRef = useRef(null);
@@ -56,7 +56,7 @@ const Converter = () => {
           ? convertCSVToSRTWithHeaders(results.data)
           : convertCSVToSRTWithoutHeaders(results.data);
         setSrtContent(srtString);
-        setError(""); // Clear error after successful conversion
+        setError("");
       },
       error: () => setError("Error parsing CSV file."),
     });
@@ -66,7 +66,7 @@ const Converter = () => {
     setFileInputKey(fileInputKey + 1);
     setCsvFile(null);
     setCsvFileName("");
-    fileInputRef.current.value = ""; // Reset the actual file input element
+    fileInputRef.current.value = "";
   };
 
   const convertCSVToSRTWithHeaders = (data) => {
@@ -98,6 +98,17 @@ const Converter = () => {
     handleReset();
   };
 
+  const handleSampleDownload = () => {
+    const sampleCsv = hasHeaders
+      ? `"${headers.startTime}","${headers.endTime}","${headers.text}"\n"00:00:01,000","00:00:03,000","Hello, world!"\n"00:00:04,000","00:00:06,000","This is a sample subtitle."`
+      : `"00:00:01,000","00:00:03,000","Hello, world!"\n"00:00:04,000","00:00:06,000","This is a sample subtitle."`;
+    const blob = new Blob([sampleCsv], { type: "text/csv;charset=utf-8" });
+    const link = document.createElement("a");
+    link.href = URL.createObjectURL(blob);
+    link.download = "sample_subtitle.csv";
+    link.click();
+  };
+
   const handleHeaderChange = (e) => {
     const { id, value } = e.target;
     setHeaders((prev) => ({ ...prev, [id]: value }));
@@ -109,34 +120,40 @@ const Converter = () => {
     setError("");
     setSrtContent("");
     setHasHeaders(false);
-    setHeaders({ startTime: "", endTime: "", text: "" });
-    resetFileInput(); // Reset file input field
+    setHeaders({
+      startTime: "start_time",
+      endTime: "end_time",
+      text: "subtitle_text",
+    });
+    resetFileInput();
   };
 
   return (
-    <Container className="col-xl-6 col-lg-6 col-md-8 col-sm-12 col-12">
-      <h1 className="mt-5">
+    <Container
+      className="converter-card w-100 mx-auto p-4 bg-light shadow rounded"
+      style={{ maxWidth: "900px" }}
+    >
+      <h1 className="mb-4 d-flex align-items-center">
         <FontAwesomeIcon icon={faFileCsv} className="me-2" />
         CSV to SRT Converter
       </h1>
       <Form>
-        <Form.Group key={fileInputKey} controlId="formFile" className="my-3">
-          <Form.Label>
+        <Form.Group controlId="formFile" className="mb-4">
+          <Form.Label className="d-flex align-items-center">
             <FontAwesomeIcon icon={faUpload} className="me-2" />
             Upload CSV File
           </Form.Label>
           <Form.Control
-            size="md"
             type="file"
             accept=".csv"
             ref={fileInputRef}
             onChange={handleFileChange}
-            key={fileInputKey} // Ensure the key changes when resetting
+            key={fileInputKey}
+            className="w-100"
           />
         </Form.Group>
-        <Form.Group controlId="formBasicCheckbox" className="my-3">
+        <Form.Group controlId="formBasicCheckbox" className="mb-4">
           <Form.Check
-            size="md"
             type="checkbox"
             label="CSV has headers"
             checked={hasHeaders}
@@ -146,57 +163,65 @@ const Converter = () => {
         {hasHeaders && (
           <>
             {["startTime", "endTime", "text"].map((header) => (
-              <Form.Group key={header} controlId={header} className="my-3">
+              <Form.Group key={header} controlId={header} className="mb-4">
                 <Form.Label>{`${
                   header.charAt(0).toUpperCase() + header.slice(1)
                 } Header`}</Form.Label>
                 <Form.Control
-                  size="md"
                   type="text"
                   placeholder={`Enter the header name for ${header}`}
                   value={headers[header]}
                   onChange={handleHeaderChange}
+                  className="w-100"
                 />
               </Form.Group>
             ))}
           </>
         )}
         {error && (
-          <Alert variant="danger">
+          <Alert variant="danger" className="mb-4">
             <FontAwesomeIcon icon={faExclamationCircle} className="me-2" />
             {error}
           </Alert>
         )}
         {srtContent && (
-          <Alert variant="success">
+          <Alert variant="success" className="mb-4">
             <FontAwesomeIcon icon={faInfoCircle} className="me-2" />
             SRT conversion successful.
           </Alert>
         )}
-        <Button size="md" variant="primary" onClick={handleConvert}>
-          <FontAwesomeIcon icon={faPaperPlane} className="me-2" />
-          Convert to SRT
-        </Button>
-        {srtContent && (
+        <div className="d-flex flex-nowrap gap-2">
           <Button
-            size="md"
-            variant="success"
-            className="ms-3"
-            onClick={handleDownload}
+            variant="primary"
+            onClick={handleConvert}
+            className="btn-sm me-2"
           >
-            <FontAwesomeIcon icon={faDownload} className="me-2" />
-            Download SRT
+            <FontAwesomeIcon icon={faPaperPlane} className="me-1" />
+            Convert to SRT
           </Button>
-        )}
-        <Button
-          size="md"
-          variant="secondary"
-          className="ms-3"
-          onClick={handleReset}
-        >
-          <FontAwesomeIcon icon={faSync} className="me-2" />
-          Reset
-        </Button>
+          {srtContent && (
+            <Button
+              variant="success"
+              onClick={handleDownload}
+              className="btn-sm me-2"
+            >
+              <FontAwesomeIcon icon={faDownload} className="me-1" />
+              Download SRT
+            </Button>
+          )}
+          <Button
+            variant="info"
+            onClick={handleSampleDownload}
+            className="btn-sm me-2"
+          >
+            <FontAwesomeIcon icon={faDownload} className="me-1" />
+            Sample CSV
+          </Button>
+          <Button variant="secondary" onClick={handleReset} className="btn-sm">
+            <FontAwesomeIcon icon={faSync} className="me-1" />
+            Reset
+          </Button>
+        </div>
       </Form>
     </Container>
   );
